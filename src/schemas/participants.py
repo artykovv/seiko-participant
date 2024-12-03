@@ -5,6 +5,39 @@ from pydantic import BaseModel, ConfigDict
 from schemas import PaketBase, StatusBase
 from schemas.branches import Branch
 
+
+class ParticipantResponse(BaseModel):
+    success: bool
+    detail: str
+
+class ParticipantCreate(schemas.BaseUserCreate):
+    is_superuser: bool = False
+    is_active: bool = True
+    is_verified: bool = False
+
+    sponsor_id: Optional[int]
+
+    name: str
+    lastname: str
+    patronymic: str
+
+    phone_number: Optional[str]
+    personal_info: Optional[str]
+    address: Optional[str]
+    birth_date: Optional[date]
+    pin: Optional[str]
+    passport_id: Optional[str]
+    passport_issuer: Optional[str]
+    passport_issue_date: Optional[date]
+    bank: Optional[str]
+    ip_inn: Optional[bool]
+    pensioner: Optional[bool]
+    paket_id: Optional[int]
+    branch_id: Optional[int]
+
+    code: Optional[str]
+
+
 class ParticipantBase(BaseModel):
     id: int
     name: str

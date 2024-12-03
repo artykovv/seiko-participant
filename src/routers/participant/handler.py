@@ -125,17 +125,31 @@ async def gifts(
         status_query = select(Status).where(Status.id == 8)
         status_result = await session.execute(status_query)
         status = status_result.scalar()
+        a = participant.left_volume + participant.right_volume
+        b = status.required_turnover - a
         return {
             "bonus_name": "Особый бонус",
-            "required_turnover": status.required_turnover
+            "required_turnover": status.required_turnover,
+            "turnover": b,
+             "volumes": {
+                "left_volume": participant.left_volume,
+                "right_volume": participant.right_volume
+            }
         }
     elif participant.status_id < 9:
         status_query = select(Status).where(Status.id == 9)
         status_result = await session.execute(status_query)
         status = status_result.scalar()
+        a = participant.left_volume + participant.right_volume
+        b = status.required_turnover - a
         return {
             "bonus_name": "Туристический бонус",
-            "required_turnover": status.required_turnover
+            "required_turnover": status.required_turnover,
+            "turnover": b,
+            "volumes": {
+                "left_volume": participant.left_volume,
+                "right_volume": participant.right_volume
+            }
         }
     elif participant.status_id < 12:
         return {
