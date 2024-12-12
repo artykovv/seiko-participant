@@ -156,6 +156,7 @@ async def participant_turnover_details(
 
     return {
         "paket": participant.paket.name,
+        "status": participant.status.name,
         "left_volume": participant.left_volume,
         "right_volume": participant.right_volume,
         "bonus_binar": participant.bonus_binar,

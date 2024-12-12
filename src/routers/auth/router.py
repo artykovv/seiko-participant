@@ -27,6 +27,7 @@ async def register(
 ):
     number = participants_create.code
     personal_number = await generate_personal_number(session, participants_create.branch_id, participants_create.code)
+    print(participants_create)
 
     # Добавляем сгенерированные данные в схему для создания
     participant_data = participants_create.dict()

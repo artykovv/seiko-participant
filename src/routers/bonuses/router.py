@@ -76,7 +76,10 @@ async def get_cheque_bonuses(
             "id": bonus.id,
             "branch_id": bonus.branch_id,
             "bonus_amount": bonus.bonus_amount,
-            "from": participants.get(bonus.from_id).personal_number if bonus.from_id in participants else None,
+            "from_id": participants.get(bonus.from_id).id if bonus.from_id in participants else None,
+            "from_personal_number": participants.get(bonus.from_id).personal_number if bonus.from_id in participants else None,
+            "from_name": participants.get(bonus.from_id).name if bonus.from_id in participants else None,
+            "from_lastname": participants.get(bonus.from_id).lastname if bonus.from_id in participants else None,
             "depth": bonus.depth,
             "created_at": bonus.created_at,
         }
@@ -131,7 +134,10 @@ async def referal(
             "id": bonus.id,
             "branch_id": bonus.branch_id,
             "bonus": bonus.bonus,
-            "from": participants.get(bonus.sponsored).personal_number if bonus.sponsored in participants else None,
+            "from_id": participants.get(bonus.sponsored).id if bonus.sponsored in participants else None,
+            "from_personal_number": participants.get(bonus.sponsored).personal_number if bonus.sponsored in participants else None,
+            "from_name": participants.get(bonus.sponsored).name if bonus.sponsored in participants else None,
+            "from_lastname": participants.get(bonus.sponsored).lastname if bonus.sponsored in participants else None,
             "created_at": bonus.created_at,
         }
         for bonus in sponsor_bonuses

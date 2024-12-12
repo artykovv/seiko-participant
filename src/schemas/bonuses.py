@@ -18,6 +18,8 @@ class StatusBonusSchema(BaseModel):
 
 class Participant(BaseModel):
     id: int
+    name: str
+    lastname: str
     personal_number: str
     model_config = ConfigDict(from_attributes=True)
 

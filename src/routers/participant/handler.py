@@ -434,7 +434,7 @@ async def get_participant_with_sponsored(
             "name": p.name,
             "lastname": p.lastname,
             "patronymic": p.patronymic,
-            "register_at": p.register_at,
+            "register_at": p.register_at if p.register_at else p.created_at,
             "paket": {
                 "id": p.paket.id if p.paket else None,
                 "name": p.paket.name if p.paket else None
