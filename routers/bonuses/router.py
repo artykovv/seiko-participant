@@ -9,6 +9,8 @@ from models import Participant, BinaryBonus, RefBonus, ChequeBonus, StatusBonus,
 from core.fastapi_users_instance import fastapi_users
 from schemas.bonuses import BinarSchema, ChequeBonusSchema, StatusBonusSchema
 
+from functions.calculate_binary_bonus import calculate_binary_bonus_no_DB
+
 router = APIRouter(prefix="/bonus" ,tags=["bonuses"])
 
 @router.get("/binar")
@@ -182,3 +184,12 @@ async def gift(
             "bonus_name": "Статус неизвестен или нет дополнительных бонусов"
         }
         
+
+@router.get("/binar-bonuse/calculate/{participant_id}")
+async def calculate_binary_bonuses_no_db(
+    participant_id: int, 
+    session: AsyncSession = Depends(get_async_session),
+    current_user: Participant = Depends(fastapi_users.current_user())
+):
+    b = await calculate_binary_bonus_no_DB(participant_id, session)
+    return b
