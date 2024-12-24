@@ -100,3 +100,7 @@ class Participant(SQLAlchemyBaseUserTableUUID, Base):
     
     # Связь с ChequeBonus
     cheque_bonus = relationship("ChequeBonus", back_populates="participant")
+
+    surprise_bonus = relationship("SurpriseBonus", back_populates="participant")
+    tour_bonus = relationship("TourBonus", back_populates="participant")
+    auto_bonus = relationship("AutoBonus", back_populates="participant")

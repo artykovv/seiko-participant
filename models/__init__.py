@@ -10,6 +10,9 @@ from models.binary_bonuses import BinaryBonus
 from models.status_bonus import StatusBonus
 from models.sponsor_bonus import SponsorBonus
 from models.cheque_bonus import ChequeBonus
+from models.surprise_bonus import SurpriseBonus
+from models.tour_bonus import TourBonus
+from models.auto_bonus import AutoBonus
 
 from .user import User
 from .role import Role

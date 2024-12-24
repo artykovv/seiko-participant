@@ -1,11 +1,12 @@
+from datetime import datetime
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database import get_async_session
-from models import Participant, BinaryBonus, RefBonus, ChequeBonus, StatusBonus, SponsorBonus, Status
+from models import Participant, BinaryBonus, RefBonus, ChequeBonus, StatusBonus, SponsorBonus, Status, SurpriseBonus, TourBonus, AutoBonus
 from core.fastapi_users_instance import fastapi_users
 from schemas.bonuses import BinarSchema, ChequeBonusSchema, StatusBonusSchema
 
@@ -193,3 +194,83 @@ async def calculate_binary_bonuses_no_db(
 ):
     b = await calculate_binary_bonus_no_DB(participant_id, session)
     return b
+
+@router.get("/surprise")
+async def surprise_bonus(
+    session: AsyncSession = Depends(get_async_session),
+    current_user: Participant = Depends(fastapi_users.current_user())
+):
+    query = select(SurpriseBonus).where(SurpriseBonus.participant_id == current_user.id)
+    result = await session.execute(query)
+    b = result.scalar()
+
+    if not b:
+        return {
+            "active": False,
+            "message": "У вас нету этого бонуса"
+        }
+    
+    return {
+        "active": True,
+        "message": "У вас есть Неожиданный бонус",
+        "bonus": {
+            "created_at": b.created_at,
+        }
+    }
+
+@router.get("/tour", response_model=dict)
+async def get_tour_bonus(
+    session: AsyncSession = Depends(get_async_session),
+    current_user: Participant = Depends(fastapi_users.current_user())
+):
+    query = select(TourBonus).where(TourBonus.participant_id == current_user.id)
+    result = await session.execute(query)
+    tour_bonus = result.scalar()
+
+    if not tour_bonus:
+        return {"message": "Вы не достигли этого бонуса"}
+
+    return {
+        "active": tour_bonus.active,
+        "active_time": tour_bonus.active_time,
+    }
+
+@router.put("/active/tour/bonus")
+async def activate_tour_bonus(
+    session: AsyncSession = Depends(get_async_session),
+    current_user: Participant = Depends(fastapi_users.current_user())
+):
+    query = select(TourBonus).where(TourBonus.participant_id == current_user.id)
+    result = await session.execute(query)
+    tour_bonus = result.scalar()
+
+    if not tour_bonus:
+        raise HTTPException(status_code=404, detail="Tour bonus not found")
+
+    if tour_bonus.active:
+        return {"message": "Бонус уже активирован"}
+
+    tour_bonus.active = True
+    tour_bonus.active_time = datetime.utcnow()
+
+    session.add(tour_bonus)
+    await session.commit()
+
+    return {"message": "Туристический бонус активирован"}
+
+@router.get("/auto")
+async def get_auto_bonus(
+    session: AsyncSession = Depends(get_async_session),
+    current_user: Participant = Depends(fastapi_users.current_user())
+):
+    query = select(AutoBonus).where(AutoBonus.participant_id == current_user.id)
+    result = await session.execute(query)
+    auto_bonus = result.scalar()
+
+    if not auto_bonus:
+        return {"message": "Вы не достигли этого бонуса"}
+    
+    return {
+        "message": "Вы достигли Автопрограмма",
+        "active_time": auto_bonus.created_at,
+    }
